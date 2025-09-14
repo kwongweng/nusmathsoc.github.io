@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUS Mathematical Society</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>NUS MathSoc</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#events" class="nav-link">Events</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>NUS Mathematical Society</h1>
+                <p>Fostering a community of mathematical minds at the National University of Singapore</p>
+                <div class="hero-buttons">
+                    <a href="#events" class="btn btn-primary">Upcoming Events</a>
+                    <a href="#about" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container">
+                <h2>About Us</h2>
+                <div class="about-grid">
+                    <div class="about-card">
+                        <div class="card-icon">📚</div>
+                        <h3>Academic Excellence</h3>
+                        <p>We promote mathematical learning through workshops, study groups, and academic discussions.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="card-icon">🤝</div>
+                        <h3>Community Building</h3>
+                        <p>Connecting mathematics students and enthusiasts across all levels of study.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Career Development</h3>
+                        <p>Supporting members with career guidance, networking opportunities, and skill development.</p>
+                    </div>
+                </div>
+                <div class="about-description">
+                    <p>The NUS Mathematical Society is a student organization dedicated to advancing the study and appreciation of mathematics at the National University of Singapore. We serve as a bridge between students, faculty, and the broader mathematical community.</p>
+                    <p>Whether you're a mathematics major, minor, or simply passionate about the subject, our society welcomes all who share an interest in the beauty and power of mathematical thinking.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="events" class="events">
+            <div class="container">
+                <h2>Upcoming Events</h2>
+                <div class="events-grid" id="events-container">
+                    <!-- Events will be dynamically loaded here -->
+                </div>
+                <div class="no-events" id="no-events" style="display: none;">
+                    <p>No upcoming events at the moment. Check back soon!</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <div class="container">
+                <h2>Get In Touch</h2>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h3>Connect With Us</h3>
+                        <div class="contact-item">
+                            <strong>Email:</strong> mathsoc@nus.edu.sg
+                        </div>
+                        <div class="contact-item">
+                            <strong>Location:</strong> Department of Mathematics, NUS
+                        </div>
+                        <div class="contact-item">
+                            <strong>Office Hours:</strong> Monday - Friday, 10 AM - 4 PM
+                        </div>
+                        <div class="social-links">
+                            <a href="#" class="social-link">Facebook</a>
+                            <a href="#" class="social-link">Instagram</a>
+                            <a href="#" class="social-link">Telegram</a>
+                        </div>
+                    </div>
+                    <div class="contact-form">
+                        <h3>Send us a Message</h3>
+                        <form id="contact-form">
+                            <input type="text" placeholder="Your Name" required>
+                            <input type="email" placeholder="Your Email" required>
+                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 NUS Mathematical Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
