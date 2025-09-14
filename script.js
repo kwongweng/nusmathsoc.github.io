@@ -54,49 +54,41 @@ document.addEventListener('DOMContentLoaded', function() {
 const eventsData = [
     {
         id: 1,
-        title: "Mathematics Olympiad Workshop",
-        description: "Join us for an intensive workshop on problem-solving techniques for mathematical olympiads. Suitable for all levels.",
-        date: "2025-09-25",
-        time: "2:00 PM - 5:00 PM",
-        location: "Math Department Seminar Room",
-        type: "Workshop"
+        title: "LaTeX Workshop Stage 1 - Basics: Document 📄",
+        description: "Learn LaTeX fundamentals: document structure, math, tables, and referencing — perfect for reports and assignments.",
+        date: "2025-09-15",
+        time: "7:00 PM - 9:00 PM",
+        location: "S17 04-06",
+        url: "https://nus.campuslabs.com/engage/submitter/form/start/696279"
     },
     {
         id: 2,
-        title: "Guest Lecture: Applications of Topology",
-        description: "Professor Jane Smith from MIT will discuss modern applications of topology in data science and machine learning.",
-        date: "2025-10-02",
-        time: "4:00 PM - 5:30 PM",
-        location: "LT15, Science Block",
-        type: "Lecture"
+        title: "LaTeX Workshop Stage 2 - Basics: Presentation 🧮",
+        description: "Design polished slides with Beamer: layouts, overlays, visuals, and equations.",
+        date: "2025-10-06",
+        time: "7:00 PM - 9:00 PM",
+        location: "S17 04-06",
+        url: "https://nus.campuslabs.com/engage/submitter/form/start/696371"
+        
     },
     {
         id: 3,
-        title: "Math Society Annual General Meeting",
-        description: "Join us for our annual general meeting where we'll discuss society activities, elect new committee members, and plan for the year ahead.",
-        date: "2025-10-10",
-        time: "6:00 PM - 8:00 PM",
-        location: "Math Department Conference Room",
-        type: "Meeting"
+        title: "LaTeX Workship Stage 3 - Advanced: Typesetting & Visualisation 📊",
+        description: "Master TikZ and PGFPlots, customise environments for theorems, proofs, and structured layouts.",
+        date: "2025-10-27",
+        time: "7:00 PM - 9:00 PM",
+        location: "S17 04-06",
+        url: "https://nus.campuslabs.com/engage/submitter/form/start/696372"
     },
     {
         id: 4,
-        title: "Study Group: Real Analysis",
-        description: "Weekly study group for students taking real analysis. Collaborative problem-solving and peer learning.",
-        date: "2025-10-15",
-        time: "7:00 PM - 9:00 PM",
-        location: "Math Department Study Room",
-        type: "Study Group"
+        title: "🧩 NUS Cubing: Beginner Workshop! 🎉",
+        description: "Ever stared at a Rubik's Cube and wondered “how on earth do I solve this? 🤯\n Join us and solve your first cube — guaranteed! 🚀 No experience needed, just curiosity and a cube in your hands!",
+        date: "2025-09-18",
+        time: "6:00 PM - 8:00 PM",
+        location: "S17 04-04",
+        url: "https://forms.cloud.microsoft/r/Gw42DvQP1i"
     },
-    {
-        id: 5,
-        title: "Career Talk: Mathematics in Finance",
-        description: "Industry professionals will share insights about careers in quantitative finance and mathematical modeling.",
-        date: "2025-10-22",
-        time: "3:00 PM - 4:30 PM",
-        location: "Business School Auditorium",
-        type: "Career Talk"
-    }
 ];
 
 function loadEvents() {
@@ -116,18 +108,23 @@ function loadEvents() {
     upcomingEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
     
     // Create event cards
-    eventsContainer.innerHTML = upcomingEvents.map(event => `
-        <div class="event-card">
-            <div class="event-date">${formatDate(event.date)}</div>
-            <h3>${event.title}</h3>
-            <p>${event.description}</p>
-            <div class="event-meta">
-                <span>🕒 ${event.time}</span>
-                <span>📍 ${event.location}</span>
-                <span>📋 ${event.type}</span>
+    eventsContainer.innerHTML = upcomingEvents.map(event => {
+        // Use event.url or event.link for the hyperlink
+        const titleHtml = event.url
+            ? `<a href="${event.url}" target="_blank" rel="noopener noreferrer">${event.title}</a>`
+            : event.title;
+        return `
+            <div class="event-card">
+                <div class="event-date">${formatDate(event.date)}</div>
+                <h3>${titleHtml}</h3>
+                <p>${event.description}</p>
+                <div class="event-meta">
+                    <span>🕒 ${event.time}</span>
+                    <span>📍 ${event.location}</span>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function formatDate(dateString) {
