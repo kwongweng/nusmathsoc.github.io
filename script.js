@@ -142,16 +142,67 @@ function handleFormSubmit(event) {
     
     // Get form data
     const formData = new FormData(event.target);
-    const name = formData.get('name') || event.target.querySelector('input[type="text"]').value;
-    const email = formData.get('email') || event.target.querySelector('input[type="email"]').value;
-    const message = formData.get('message') || event.target.querySelector('textarea').value;
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const message = formData.get('message');
     
-    // In a real application, you would send this data to a server
-    // For now, we'll just show a success message
-    alert(`Thank you, ${name}! Your message has been received. We'll get back to you at ${email} soon.`);
+    // Validate form data
+    if (!name || !email || !message) {
+        alert('Please fill in all required fields.');
+        return;
+    }
     
-    // Reset form
-    event.target.reset();
+    // Create response object
+    const response = {
+        id: generateId(),
+        name: name.trim(),
+        email: email.trim(),
+        message: message.trim(),
+        timestamp: new Date().toISOString(),
+        dateFormatted: new Date().toLocaleString()
+    };
+    
+    // Store the response
+    try {
+        storeFormResponse(response);
+        alert(`Thank you, ${name}! Your message has been received and stored. We'll get back to you at ${email} soon.`);
+        
+        // Reset form
+        event.target.reset();
+    } catch (error) {
+        console.error('Error storing form response:', error);
+        alert('There was an error saving your message. Please try again.');
+    }
+}
+
+// Generate unique ID for each response
+function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+// Store form response in localStorage
+function storeFormResponse(response) {
+    const storageKey = 'mathsoc_contact_responses';
+    
+    // Get existing responses
+    let responses = [];
+    try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) {
+            responses = JSON.parse(stored);
+        }
+    } catch (error) {
+        console.error('Error reading stored responses:', error);
+        responses = [];
+    }
+    
+    // Add new response
+    responses.push(response);
+    
+    // Store back to localStorage
+    localStorage.setItem(storageKey, JSON.stringify(responses));
+    
+    console.log('Form response stored successfully:', response);
 }
 
 // Smooth scrolling for navigation links (fallback for older browsers)
@@ -197,8 +248,237 @@ style.textContent = `
         opacity: 1;
         transform: translateY(0);
     }
+
+    /* Admin interface styles */
+    .admin-interface {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 10000;
+        padding: 20px;
+        overflow-y: auto;
+        color: white;
+    }
+    
+    .admin-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: #1a1a1a;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 20px;
+    }
+    
+    .admin-header h2 {
+        color: #4CAF50;
+        margin: 0;
+    }
+    
+    .admin-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .admin-btn {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .admin-btn:hover {
+        background: #45a049;
+    }
+    
+    .admin-btn.danger {
+        background: #f44336;
+    }
+    
+    .admin-btn.danger:hover {
+        background: #da190b;
+    }
+    
+    .response-card {
+        background: #2a2a2a;
+        margin-bottom: 15px;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #4CAF50;
+    }
+    
+    .response-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .response-meta {
+        font-size: 0.9em;
+        color: #ccc;
+    }
+    
+    .response-id {
+        font-family: monospace;
+        font-size: 0.8em;
+        color: #888;
+    }
+    
+    .response-message {
+        margin-top: 10px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+    }
+    
+    .no-responses {
+        text-align: center;
+        color: #888;
+        font-style: italic;
+        padding: 40px;
+    }
 `;
 document.head.appendChild(style);
+
+// Admin interface functionality
+function checkAdminAccess() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'mathsoc2025') {
+        showAdminInterface();
+    }
+}
+
+function showAdminInterface() {
+    const responses = getStoredResponses();
+    
+    const adminHTML = `
+        <div class="admin-interface" id="admin-interface">
+            <div class="admin-content">
+                <div class="admin-header">
+                    <h2>📧 Contact Form Responses (${responses.length})</h2>
+                    <div class="admin-actions">
+                        <button class="admin-btn" onclick="exportResponses()">📊 Export CSV</button>
+                        <button class="admin-btn danger" onclick="clearAllResponses()">🗑️ Clear All</button>
+                        <button class="admin-btn" onclick="closeAdminInterface()">✕ Close</button>
+                    </div>
+                </div>
+                <div class="responses-container">
+                    ${responses.length === 0 ? 
+                        '<div class="no-responses">No responses yet.</div>' :
+                        responses.map(response => createResponseCard(response)).join('')
+                    }
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', adminHTML);
+}
+
+function createResponseCard(response) {
+    return `
+        <div class="response-card">
+            <div class="response-header">
+                <div>
+                    <strong>${escapeHtml(response.name)}</strong> &lt;${escapeHtml(response.email)}&gt;
+                </div>
+                <div class="response-meta">
+                    ${response.dateFormatted}
+                </div>
+            </div>
+            <div class="response-id">ID: ${response.id}</div>
+            <div class="response-message">${escapeHtml(response.message)}</div>
+        </div>
+    `;
+}
+
+function getStoredResponses() {
+    const storageKey = 'mathsoc_contact_responses';
+    try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) {
+            return JSON.parse(stored).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        }
+    } catch (error) {
+        console.error('Error reading stored responses:', error);
+    }
+    return [];
+}
+
+function exportResponses() {
+    const responses = getStoredResponses();
+    if (responses.length === 0) {
+        alert('No responses to export.');
+        return;
+    }
+    
+    // Create CSV content
+    const headers = ['ID', 'Name', 'Email', 'Message', 'Date'];
+    const csvContent = [
+        headers.join(','),
+        ...responses.map(response => [
+            response.id,
+            `"${response.name.replace(/"/g, '""')}"`,
+            response.email,
+            `"${response.message.replace(/"/g, '""')}"`,
+            response.dateFormatted
+        ].join(','))
+    ].join('\n');
+    
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `mathsoc-contact-responses-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+}
+
+function clearAllResponses() {
+    if (confirm('Are you sure you want to clear all contact form responses? This action cannot be undone.')) {
+        localStorage.removeItem('mathsoc_contact_responses');
+        alert('All responses have been cleared.');
+        closeAdminInterface();
+    }
+}
+
+function closeAdminInterface() {
+    const adminInterface = document.getElementById('admin-interface');
+    if (adminInterface) {
+        adminInterface.remove();
+    }
+    
+    // Remove admin parameter from URL without refreshing
+    const url = new URL(window.location);
+    url.searchParams.delete('admin');
+    window.history.replaceState({}, '', url);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Initialize admin interface if accessed with admin parameter
+document.addEventListener('DOMContentLoaded', checkAdminAccess);
 
 // Initialize animations on load
 document.addEventListener('DOMContentLoaded', animateOnScroll);
